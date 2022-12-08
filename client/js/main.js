@@ -6,10 +6,21 @@ var app=new Vue({
         return {
             info: [],
             loading: true,
-            errored: false
+            errored: false,
+            time: '',
+            date: '',
+            hours: '',
+            minites: '',
+            seconds: '',
+
+
         }
     },
     methods: {
+        currentDate() {
+            const current = new Date();
+            const date = `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`;      return date;
+        },
         loadData()
         {
             var $apiEndpoint =  settingObject.root + 'salat/v1/time?_wpnonce=' + settingObject.nonce;
@@ -66,3 +77,30 @@ var app=new Vue({
         setTimeout(this.loadData, 5*60*1000);
     }
 })
+
+
+var week = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+var timerID = setInterval(updateTime, 1000);
+updateTime();
+function updateTime() {
+    var cd = new Date();
+    var hours = cd.getHours() ; // gives the value in 24 hours format
+    var AmOrPm = hours >= 12 ? 'pm' : 'am';
+    hours = (hours % 12) || 12; //12 hours format
+
+    app.time = hours + ':' + zeroPadding(cd.getMinutes(), 2) + ':<span style="width:100px;">' + zeroPadding(cd.getSeconds(), 2)+ '</span> '+AmOrPm;
+    app.hours = hours;
+    app.minites =  zeroPadding(cd.getMinutes(), 2);
+    app.seconds =  zeroPadding(cd.getSeconds(), 2);
+    app.amOrPm = AmOrPm;
+    app.date = zeroPadding(cd.getDate(), 2)+ '-' + zeroPadding(cd.getMonth()+1, 2) + '-'+ zeroPadding(cd.getFullYear(), 4)+ ' ' + week[cd.getDay()];
+
+};
+
+function zeroPadding(num, digit) {
+    var zero = '';
+    for(var i = 0; i < digit; i++) {
+        zero += '0';
+    }
+    return (zero + num).slice(-digit);
+}

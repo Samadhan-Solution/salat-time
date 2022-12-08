@@ -1,5 +1,7 @@
 <?php
 namespace  SalatTimes;
+use DateTime;
+
 class API
 {
     function __construct() {
@@ -34,12 +36,32 @@ class API
     public static function get_salat_times()
     {
          if(self::IsAuthorized()) {
-                $salat_times = get_posts(array('orderby' => 'menu_order', 'order' => 'ASC', 'post_type' => 'salat_times', 'posts_per_page' => 10));
+
+
+                //$salat_times = get_posts(array('orderby' => 'menu_order', 'order' => 'ASC', 'post_type' => 'salat_times', 'posts_per_page' => 10));
+                $salat_times_data =self::get_day_by_current_date();
+             //$salat_times=[];
+                foreach ($salat_times_data as $salat_time){
+                    $salat_times=array(
+                        'Shuruq'=>date('h:i ',strtotime($salat_time->Fajr_Iqamah)),
+                        'Dhuhr'=>date('h:i ',strtotime($salat_time->Dhuhr_iqamah)),
+                        'Asr'=>date('h:i ',strtotime($salat_time->Asr_Iqamah)),
+                        'Magrib'=>date('h:i ',strtotime($salat_time->Maghrib_Iqamah)),
+                        'Eisha'=>date('h:i ',strtotime($salat_time->Isha_Iqamah)),
+                    );
+                }
                 return rest_ensure_response($salat_times);
           }
          else{
              return rest_ensure_response('You are not authorized to call this service!');
          }
+    }
+
+    public static function get_day_by_current_date(){
+        global $wpdb;
+        $current_timestamp = DateTime::createFromFormat('!d/m/Y',date('d/m/Y'))->getTimestamp();
+        $query="SELECT * FROM {$wpdb->prefix}salat_times where Day ='$current_timestamp'";
+        return $wpdb->get_results($query);
     }
 
     public static function save_salat_times()
