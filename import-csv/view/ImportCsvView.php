@@ -5,7 +5,7 @@ class ImportCsvView
     public function __construct()
     {
         add_shortcode('smdn_import_csv', array($this, 'get_import_csv_file_uploaded_form'));
-        add_shortcode('smdn_auto_process_imported_csv', array($this, 'get_import_csv_auto_process_imported_form'));
+      //  add_shortcode('smdn_auto_process_imported_csv', array($this, 'get_import_csv_auto_process_imported_form'));
 
     }
 
@@ -14,7 +14,7 @@ class ImportCsvView
         $current_timestamp = DateTime::createFromFormat('!d/m/Y',date('d/m/Y'))->getTimestamp();
 
         //var_dump(date('d/m/Y'));
-        var_dump($current_timestamp);
+        //var_dump($current_timestamp);
 
 
 //var_dump(date('Y-m-d'));
