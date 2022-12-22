@@ -1,4 +1,4 @@
-
+let $update_interval =  1*60*1000; /* ms */
 var app=new Vue({
 
     el: '#app',
@@ -26,13 +26,17 @@ var app=new Vue({
             var $apiEndpoint =  settingObject.root + 'salat/v1/time?_wpnonce=' + settingObject.nonce;
             axios.get($apiEndpoint)
                 .then((response) =>
-                {this.info = response;
-                    console.log(response);})
+                    {   this.info = response;
+                        //console.log(response);
+                    })
                 .catch(error => {
                     console.log(error)
                     this.errored = true
                 })
-                .finally(() => this.loading = false)
+                .finally(() => {
+                    this.loading = false;
+                    setTimeout(this.loadData, $update_interval);
+                })
         },
         saveChanges()
         {
@@ -74,7 +78,7 @@ var app=new Vue({
      },
     mounted () {
        this.loadData();
-        setTimeout(this.loadData, 5*60*1000);
+       /* loadData will call itself with a timer */
     }
 })
 
